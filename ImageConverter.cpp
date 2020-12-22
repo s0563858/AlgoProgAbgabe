@@ -1,0 +1,157 @@
+// clang++  -I /usr/local/Cellar/opencv/4.4.0_2/include/opencv4 -L /usr/local/Cellar/opencv/4.4.0_2/lib -lopencv_gapi -lopencv_stitching -lopencv_alphamat -lopencv_aruco -lopencv_bgsegm -lopencv_bioinspired -lopencv_ccalib -lopencv_dnn_objdetect -lopencv_dnn_superres -lopencv_dpm -lopencv_highgui -lopencv_face -lopencv_freetype -lopencv_fuzzy -lopencv_hfs -lopencv_img_hash -lopencv_intensity_transform -lopencv_line_descriptor -lopencv_quality -lopencv_rapid -lopencv_reg -lopencv_rgbd -lopencv_saliency -lopencv_sfm -lopencv_stereo -lopencv_structured_light -lopencv_phase_unwrapping -lopencv_superres -lopencv_optflow -lopencv_surface_matching -lopencv_tracking -lopencv_datasets -lopencv_text -lopencv_dnn -lopencv_plot -lopencv_videostab -lopencv_videoio -lopencv_viz -lopencv_xfeatures2d -lopencv_shape -lopencv_ml -lopencv_ximgproc -lopencv_video -lopencv_xobjdetect -lopencv_objdetect -lopencv_calib3d -lopencv_imgcodecs -lopencv_features2d -lopencv_flann -lopencv_xphoto -lopencv_photo -lopencv_imgproc -lopencv_core -Xpreprocessor -fopenmp -lomp -std=c++11  helloWorld.cpp -o yourFileProgram
+//#include "ImageConverter.h"
+#include "ParallelImageProcessor.cpp"
+#include <cstdio>
+#include <iostream>
+#include <omp.h>
+
+#include "opencv2/opencv.hpp"
+
+class ImageConverter {
+
+private:
+    cv::Mat image;
+    double lastOperationTime;
+    bool assemblyEnabled;
+    int numberOfThreads;
+
+public:
+    void setNumberOfThreads(int numOfThreads)
+    {
+        numberOfThreads = numOfThreads;
+        omp_set_dynamic(0); // garantees the right number of threads
+        omp_set_num_threads(numberOfThreads);
+    }
+
+    void setAssemblyExecution(bool enabled)
+    {
+        assemblyEnabled = enabled;
+    }
+
+    ImageConverter(std::string pathImage)
+    {
+        assemblyEnabled = true;
+        image = cv::imread(pathImage, cv::IMREAD_UNCHANGED);
+    }
+
+    double getDurationOfLastOperation()
+    {
+        return lastOperationTime;
+    }
+
+    static uchar sadd(uchar a, uchar b)
+    {
+        return (a > 0xFF - b) ? 0xFF : a + b;
+    }
+
+    void rgbToGrayscale()
+    {
+        double startTime = omp_get_wtime();
+
+        int rows = image.rows;
+        int cols = image.cols;
+        int channels = image.channels();
+        uchar* ptr = image.data;
+        if (!assemblyEnabled) {
+#pragma omp parallel for
+            for (int i = 0; i < rows; ++i) {
+                for (int j = 0; j < cols; ++j) {
+                    uchar* pixel = ptr + channels * (i * cols + j);
+
+                    uchar b = *(pixel + 0);
+                    uchar g = *(pixel + 1);
+                    uchar r = *(pixel + 2);
+
+                    double grayscale = 0.21 * r + 0.72 * g + 0.07 * b;
+
+                    pixel[0] = grayscale;
+                    pixel[1] = grayscale;
+                    pixel[2] = grayscale;
+                }
+            }
+        } else {
+#pragma omp parallel for
+            for (int i = 0; i < rows; ++i) {
+                for (int j = 0; j < cols; ++j) {
+                    uchar* pixel = ptr + channels * (i * cols + j);
+                    __asm {
+                        mov rcx, pixel
+                        mov eax, [rcx]
+
+                        shr al, 4
+                        shr ah, 1
+                        add al, ah
+                        shr ah, 1
+                        add ah, al
+
+                        shr eax, 8
+                        shr ah, 2
+                        add al, ah
+                        jnc label
+                        mov al, 255
+
+                        label:
+                        mov [rcx], al
+                        mov [rcx+1], al
+                        mov [rcx+2], al
+                    }
+                }
+            }
+        }
+
+        double endTime = omp_get_wtime();
+
+        lastOperationTime = endTime - startTime;
+    }
+
+    void changeBrightness(uchar brightness)
+    {
+        double startTime = omp_get_wtime();
+
+        int rows = image.rows;
+        int cols = image.cols;
+        int channels = image.channels();
+        uchar* ptr = image.data;
+        if (!assemblyEnabled) {
+#pragma omp parallel for
+            for (int i = 0; i < rows; ++i) {
+                for (int j = 0; j < cols; ++j) {
+
+                    uchar* pixel = ptr + channels * (i * cols + j);
+
+                    uchar b = *(pixel + 0);
+                    uchar g = *(pixel + 1);
+                    uchar r = *(pixel + 2);
+
+                    pixel[0] = sadd(b, brightness);
+                    pixel[1] = sadd(g, brightness);
+                    pixel[2] = sadd(r, brightness);
+                }
+            }
+        } else {
+            uchar brightnessArr[4] = { brightness, brightness, brightness, 0 };
+#pragma omp parallel for
+            for (int i = 0; i < rows; ++i) {
+                for (int j = 0; j < cols; ++j) {
+                    uchar* pixel = ptr + channels * (i * cols + j);
+                    __asm {
+                        mov rcx, pixel
+                        movd mm1, [rcx]
+                        movd mm0, brightnessArr
+                        paddusb mm1, mm0
+                        movd [rcx], mm1
+                    }
+                }
+            }
+        }
+
+        double endTime = omp_get_wtime();
+
+        lastOperationTime = endTime - startTime;
+    }
+
+    cv::Mat getImage()
+    {
+        return image;
+    }
+};
