@@ -3,7 +3,6 @@
 #include <list>
 #include <omp.h>
 #include <string>
-//#include "ImageConverter.h"
 
 #include <immintrin.h>
 
