@@ -1,0 +1,1 @@
+Der Quellcode der Anwendung kann unter "https://github.com/s0563858/AlgoProgAbgabe" gefunden werden.
