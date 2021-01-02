@@ -1,4 +1,3 @@
-#include "ParallelImageProcessor.cpp"
 #include <cstdio>
 #include <iostream>
 #include <omp.h>

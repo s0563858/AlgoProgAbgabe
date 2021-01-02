@@ -117,7 +117,7 @@ Das Ziel der gegebenen Aufgabe besteht darin, eine Anwendung zu entwickeln, die 
 \item \textbf{Histogramm:} Die Anwendung sollte ein Histogramm des Input-Bildes erzeugen können und dieses anzeigen.
 \end{itemize}
 
-Eine weitere Anforderung besteht darin, die Anwendung so zu implementieren, dass alle Berechnungen parallel in mehreren Threads ausgeführt werden. Die implementierte Anwendung sollte in der Dokumentation beschrieben werden, wobei man insbesondere auf den Zusammenhang zwischen der Parallelisierung und der Ausführungsgeschwindigkeit eingehen muss. Außerdem muss die Ausführungsgeschwindigkeit von ähnlichen Anwendungen oder Libraries mit der Ausführungszeit der erstellten Anwendung für dieselben Operationen vergleichen.
+Eine weitere Anforderung besteht darin, die Anwendung so zu implementieren, dass alle Berechnungen parallel in mehreren Threads ausgeführt werden. Die implementierte Anwendung sollte in der Dokumentation beschrieben werden, wobei man insbesondere auf den Zusammenhang zwischen der Parallelisierung und der Ausführungsgeschwindigkeit eingehen muss. Außerdem muss die Ausführungsgeschwindigkeit von ähnlichen Anwendungen oder Libraries mit der Ausführungszeit der erstellten Anwendung für dieselben Operationen verglichen werden.
 
 
 
@@ -258,7 +258,7 @@ uchar brightnessArr[4] = {brightness, brightness, brightness, 0};
 
 
 \subsection{Histogramm}
-Bei dem der Erstellung des Histogramms eines Bildes zählt man die Kanäle aller Pixel, die denselben Wert haben und erstellt dann eine Abbildung, die die ermittelten Werte darstellt. Da die Kanäle der Pixel den Wertebereich 0-255 haben, gibt es dabei 256 Zähler für jeden Farbkanal des Pixels. Das Erstellen des Histogramms kann in drei Schritte aufgeteilt werden:
+Bei der Erstellung des Histogramms eines Bildes zählt man die Kanäle aller Pixel, die denselben Wert haben und erstellt dann eine Abbildung, die die ermittelten Werte darstellt. Da die Kanäle der Pixel den Wertebereich 0-255 haben, gibt es dabei 256 Zähler für jeden Farbkanal des Pixels. Das Erstellen des Histogramms kann in drei Schritte aufgeteilt werden:
 
 \begin{enumerate}
 \item Werte der Farbkanäle der Pixel werden gezählt.
