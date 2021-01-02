@@ -184,7 +184,7 @@ Der Quellcode der RGB zu Grayscale Funktionalität ist im Listing 1 zu sehen. Di
                      add ah, al  //ah=ah+al
 
                      shr eax, 8    //shift the r-Value into ah
-                     shr ah, 2    //ah=ah/2
+                     shr ah, 2    //ah=ah/4
                      add al, ah  //al=al+ah    	
                      jnc label    //check if value <= 255 
                      mov al, 255
