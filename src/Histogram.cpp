@@ -1,3 +1,6 @@
+/*INFO: This class is resposible for creating of the histogram of some image.
+ *
+ * */
 #include <cstdio>
 #include <iostream>
 #include <omp.h>
@@ -47,7 +50,7 @@ public:
         cv::Mat histMatrix((256 * scale) / 4, 256 * scale, CV_8UC3);
         uchar* ptrHist = (uchar*)histMatrix.data;
 
-        //#pragma omp parallel for shared(histogramDataR, histogramDataG, histogramDataB)
+        //count the pixel-values:
 #pragma omp parallel for reduction(+ \
                                    : histogramDataR, histogramDataG, histogramDataB)
         for (int i = 0; i < image.rows; ++i) {
@@ -59,6 +62,7 @@ public:
             }
         }
 
+        //get the highest counter: (needed for apropriate scaling of the histogram)
         int highestCounter = 0;
 #pragma omp parallel for reduction(max \
                                    : highestCounter)
@@ -74,6 +78,7 @@ public:
             }
         }
 
+        //draw the histogram:
 #pragma omp parallel for
         for (int i = 0; i < 256 * scale; i += 1 * scale) {
             float r = histogramDataR[i / scale];

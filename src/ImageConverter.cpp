@@ -1,3 +1,7 @@
+/*INFO: This class is resposible for two image-transformation operations:
+ * rgb to grayscale and changing of the brightness.
+ *
+ * */
 #include <cstdio>
 #include <iostream>
 #include <omp.h>
@@ -49,6 +53,7 @@ public:
         int cols = image.cols;
         int channels = image.channels();
         uchar* ptr = image.data;
+        // which version should be executed - asm or c++:
         if (!assemblyEnabled) {
 #pragma omp parallel for
             for (int i = 0; i < rows; ++i) {
@@ -109,6 +114,7 @@ public:
         int cols = image.cols;
         int channels = image.channels();
         uchar* ptr = image.data;
+        // which version should be executed - asm or c++:
         if (!assemblyEnabled) {
 #pragma omp parallel for
             for (int i = 0; i < rows; ++i) {

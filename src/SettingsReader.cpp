@@ -1,3 +1,6 @@
+/*INFO: This class is resposible for reading of the user-arguments.
+ *
+ * */
 #include <cstdio>
 #include <iostream>
 #include <list>
@@ -42,12 +45,8 @@ public:
     }
     bool readSettings()
     {
-        //std::string path = "";
-        //int histogramScale = 0;
-        //int brightness = 0;
-        //int numOfThreads = 0;
-        //std::list<option> options;
 
+        // if no arguments - print help:
         if (argumentNumber == 1) {
             std::cout << "Help:" << std::endl
                       << "path to image: -p path" << std::endl

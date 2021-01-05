@@ -1,3 +1,6 @@
+/*INFO: This is the main class of the application.
+ *
+ * */
 #include "Histogram.cpp"
 #include "ImageConverter.cpp"
 #include "SettingsReader.cpp"
@@ -22,16 +25,19 @@ bool contains(std::list<option> list, option element)
 
 int main(int argc, char** argv)
 {
+    //read arguments from user:
     SettingsReader settings(argc, argv);
-
     if (settings.readSettings()) {
 
         std::list<option> options = settings.getOptions();
+        //check if the path-argument was passed
         if (!contains(options, option::PATH)) {
             std::cout << std::endl
                       << "Error: no path!";
             exit(1);
         }
+
+        //depending on which arguments were passed - execute some operations:
         ImageConverter converter(settings.path);
         if (contains(options, option::PURE_CPP)) {
             converter.setAssemblyExecution(false);
