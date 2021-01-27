@@ -19,3 +19,12 @@ Unter **Windows** kann die Anwendung mit Visual Studio leider nicht kompiliert w
 
 1. Der Visual Studio Compiler unterstützt folgende OpenMP-Anweisung nicht: `reduction(max: variableName)` (wird erst ab OpenMP 3.1 unterstützt - MSVC nutzt aber OpenMP 2.0)
 2. MSVC verbietet die Nutzung von Inline-Assembler in parallelen Code-Abschnitten 
+
+
+Um die Anwendung dennoch demonstrieren zu können, wurden Videos aufgenommen auf denen die Anwendung demonstriert wurde. Im ersten Video werden die wichtigsten Funktionalitäten gezeigt: RgbToGrayscale, Brightness und Histogram.
+
+![](Documentation/mainFeatures.mov)
+
+Im zweiten Video wird die Ausführungszeit der RgbToGrayscale Operation ohne Assembler (*-cpp* Argument) und mit Assembler verglichen. 
+
+![](Documentation/cppAsm.mov)
